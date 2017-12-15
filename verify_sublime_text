@@ -1,0 +1,29 @@
+#!/bin/bash
+#======================================================================================
+# Verify installation of Sublime Text 3 on Debian Linux.
+#
+# Arguments:
+# (None)		
+#
+# Version: 1.0.0
+# Date: 14 Dec 2017
+# Author: Dave Nicolette
+#======================================================================================
+
+if ! [ "$(dpkg -l | grep sublime-text)" ]
+then
+    echo "Sublime Text package is not installed"
+fi 
+
+declare -a files
+files[${#files[@]}]="$USER_HOME/.local/share/applications/sublime-text.desktop" 
+files[${#files[@]}]="$USER_HOME/.config/sublime-text-3/Packages/User"
+files[${#files[@]}]="$USER_HOME/.config/sublime-text-3/Installed Packages/Package Control.sublime-package"
+
+for name in "${files[@]}"
+do
+    if ! [ -f "${name}" ]
+    then
+        echo "${name} does not exist"
+    fi
+done

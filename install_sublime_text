@@ -1,0 +1,56 @@
+#!/bin/bash
+#======================================================================================
+# Install and configure Sublime Text 3 on Debian Linux.
+#
+# Arguments:
+# (None)		
+#
+# Version: 1.0.0
+# Date: 14 Dec 2017
+# Author: Dave Nicolette
+#======================================================================================
+
+if [ "$(dpkg -l | grep sublime-text)" ]
+then
+    echo "Sublime Text package is installed"
+else 
+    echo 'Installing sublime-text'
+    echo 'Installing sublime-text GPG key'
+    wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | apt-key add -
+    echo 'Installing apt-transport-https'
+    apt install -q -f -y apt-transport-https
+    echo 'Adding Sublime Text repository to apt list'
+    echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
+    apt update
+    echo 'Installing package sublime-text'
+    apt install -q -f -y sublime-text
+fi 
+
+if [ -f "$USER_HOME/.local/share/applications/sublime-text.desktop" ]
+then
+    echo "$USER_HOME/.local/share/applications/sublime-text.desktop exists"
+else 
+	echo "Adding sublime-text desktop file to $USER_HOME/.local/share/applications"
+    cp "$COMMON_DIR/sublime-text-3/gnome-desktop/sublime-text.desktop" "$USER_HOME/.local/share/applications/."
+fi
+
+if [ -f "$USER_HOME/.config/sublime-text-3/Packages/User/bash.sublime-snippet" ]
+then
+    echo "$USER_HOME/.config/sublime-text-3/Packages/User/bash.sublime-snippet exists"
+else 
+	echo 'Copying Sublime Text user preference files'
+    cp -a "$COMMON_DIR/sublime-text-3/config/bash.sublime-snippet" "$USER_HOME/.config/sublime-text-3/Packages/User/bash.sublime-snippet"
+    cp -a "$COMMON_DIR/sublime-text-3/config/Default.tmPreferences" "$USER_HOME/.config/sublime-text-3/Packages/User/Default.tmPreferences"
+    cp -a "$COMMON_DIR/sublime-text-3/config/Preferences.sublime-settings" "$USER_HOME/.config/sublime-text-3/Packages/User/Preferences.sublime-settings"
+fi
+
+if [ -f "$USER_HOME/.config/sublime-text-3/Installed Packages/Package Control.sublime-package" ]
+then
+    echo "$USER_HOME/.config/sublime-text-3/Installed Packages/Package Control.sublime-package exists"
+else 
+    echo 'Installing Sublime Text 3 Package Control'
+    wget -O "$USER_HOME/.config/sublime-text-3/Installed Packages/Package Control.sublime-package" "https://sublime.wbond.net/Package Control.sublime-package"
+fi
+
+
+
